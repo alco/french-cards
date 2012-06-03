@@ -1,0 +1,100 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <title>Ultra Study</title>
+    
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
+</head>
+<body>
+    <div id="card">
+        <div id="card-title">
+            <p>Hello</p>
+        </div>
+        <div id="card-content">
+            <p>Bonjour</p>
+            <button id="flip-card-but">Show answer</button>
+        </div>
+        <div id="card-footer">
+            <button id="wrong-but">Wrong</button>
+            <button id="right-but">Right</button>
+        </div>
+    </div>
+
+    <script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        $('#flip-card-but').click(function() {
+            $(this).hide();
+            $('#card-content').css({
+                color: "black"
+            });
+        });
+
+        $('#wrong-but').click(function() {
+            wrongAnswer();
+            nextCard();
+        });
+
+        $('#right-but').click(function() {
+            rightAnswer();
+            nextCard();
+        });
+
+        var wrongCount = 0,
+            rightCount = 0,
+            currentCard = 0;
+
+        var cards = {
+            "title": "The Basics",
+            "cards": [
+            {
+                "fr": "Ça va?",
+                "en": "How are you?",
+                "ru": "Как дела?"
+            },
+            {
+                "fr": "Ça va bien.",
+                "ru": "Дела идут хорошо.",
+                "en": "Things are going well."
+            } 
+            ]
+        };
+
+        function wrongAnswer() {
+            wrongCount++;
+        }
+
+        function rightAnswer() {
+            rightCount++;
+        }
+
+        function nextCard() {
+            currentCard++;
+            showCard(currentCard);
+        }
+
+        function showCard(index) {
+            var titleElem = $('#card-title p'),
+                contentDiv = $('#card-content'),
+                contentElem = $('#card-content p'),
+                answerBut = $('#flip-card-but');
+
+            if (currentCard >= cards["cards"].length) {
+                titleElem.html("The End");
+                contentElem.html("");
+                currentCard = -1;
+                return;
+            }
+
+            var cardData = cards["cards"][index];
+            titleElem.html(cardData["en"]);
+            contentElem.html(cardData["fr"]);
+            contentDiv.css({ color: "white" });
+            answerBut.show();
+        }
+
+        // main
+        showCard(currentCard);
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+div {
+    border: 1px solid;
+    text-align: center;
+}
+
+#card {
+    width: 200;
+    /*height: 300;*/
+    overflow: hidden;
+}
+
+#card-title {
+    font-weight: bold;
+}
+
+#card-content {
+    height: 200;
+    color: white;
+}
+
+#card-footer {
+}
+
+p {
+    border: 1px solid;
+}
