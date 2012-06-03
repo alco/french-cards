@@ -1,6 +1,8 @@
 Pronouns
 ========
 
+# Pronouns
+
 +-------+----------------------+---------------------+
 | Il    | visite la Villette.  | masculine, singular |
 |       | est sur la table.    |                     |
@@ -14,3 +16,32 @@ Pronouns
 | Elles | visitent le Louvre.  | feminine, plural    |
 |       | sont sur la table.   |                     |
 +-------+----------------------+---------------------+
+
+# Pronoms possessifs
+en: Possesive pronouns
+
++------------------+-----------------------+--------------------------+
+|                  | Singular              | Plural                   |
++------------------+-----------+-----------+------------+-------------+
+| English          | Masculine | Feminine  | Masculine  | Feminine    |
++==================+===========+===========+============+=============+
+| mine             | le mien   | la mienne | les miens  | les miennes |
+| yours (singular) | le tien   | la tienne | les tiens  | les tiennes |
+| his, hers, its   | le sien   | la sienne | les siens  | les siennes |
+| ours             | le nôtre  | la nôtre  | les nôtres | les nôtres  |
+| yours (plural)   | le vôtre  | la vôtre  | les vôtres | les vôtres  |
+| theirs           | le leur   | la leur   | les leurs  | les leurs   |
++------------------+-----------+-----------+------------+-------------+
+
+# Possesive adjectives
+
++-----------------+-----------+----------+--------------+--------+
+| English         | Masculine | Feminine | Before vowel | Plural |
++=================+===========+==========+==============+========+
+| my              | mon       | ma       | mon          | mes    |
+| your (singular) | ton       | ta       | ton          | tes    |
+| his, her, its   | son       | sa       | son          | ses    |
+| our             | notre     | notre    | notre        | nos    |
+| your (plural)   | votre     | votre    | votre        | vos    |
+| their           | leur      | leur     | leur         | leurs  |
++-----------------+-----------+----------+--------------+--------+
