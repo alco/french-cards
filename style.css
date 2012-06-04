@@ -15,7 +15,15 @@ div {
 
 #card-content {
     height: 200;
-    color: white;
+    /*color: white;*/
+}
+
+#tap-to-enter-answer {
+    height: 100;
+}
+
+#tap-to-show-answer {
+    height: 100;
 }
 
 #card-footer {

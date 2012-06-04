@@ -12,8 +12,10 @@
             <p>Hello</p>
         </div>
         <div id="card-content">
-            <p>Bonjour</p>
-            <button id="flip-card-but">Show answer</button>
+            <p id="answer">Bonjour</p>
+            <!--<button id="flip-card-but">Show answer</button>-->
+            <div id="tap-to-enter-answer">Tap here to type in the answer</div>
+            <div id="tap-to-show-answer">Tap here to show the answer</div>
         </div>
         <div id="card-footer">
             <button id="wrong-but">Wrong</button>
@@ -28,6 +30,12 @@
             $('#card-content').css({
                 color: "black"
             });
+        });
+
+        $('#tap-to-show-answer').click(function() {
+            $(this).hide();
+            $('#tap-to-enter-answer').hide();
+            $('#answer').show();
         });
 
         $('#wrong-but').click(function() {
@@ -77,7 +85,8 @@
             var titleElem = $('#card-title p'),
                 contentDiv = $('#card-content'),
                 contentElem = $('#card-content p'),
-                answerBut = $('#flip-card-but');
+                answerBut = $('#flip-card-but'),
+                answerElem = $('#answer');
 
             if (currentCard >= cards["cards"].length) {
                 titleElem.html("The End");
@@ -89,8 +98,9 @@
             var cardData = cards["cards"][index];
             titleElem.html(cardData["en"]);
             contentElem.html(cardData["fr"]);
-            contentDiv.css({ color: "white" });
-            answerBut.show();
+            answerElem.hide();
+            $('#tap-to-enter-answer').show();
+            $('#tap-to-show-answer').show();
         }
 
         // main
