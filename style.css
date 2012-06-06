@@ -9,6 +9,11 @@ div {
     overflow: hidden;
 }
 
+#counter {
+    width: 200;
+    text-align: center;
+}
+
 #card-title {
     font-weight: bold;
 }
@@ -17,6 +22,40 @@ div {
     height: 200;
     /*color: white;*/
 }
+
+/**/
+
+#card.choice div.footer button.footer-skip {
+    display: inline;
+}
+
+#card.choice div.footer button.footer-but {
+    display: none;
+}
+
+#card.choice div.content p {
+    display: none;
+}
+
+/**/
+
+#card.answer div.footer button.footer-skip {
+    display: none;
+}
+
+#card.answer div.footer button.footer-but {
+    display: inline;
+}
+
+#card.answer div.content p {
+    display: block;
+}
+
+#card.answer div.content div {
+    display: none;
+}
+
+/**/
 
 #tap-to-enter-answer {
     height: 100;
