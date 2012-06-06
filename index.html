@@ -35,29 +35,6 @@
 //            });
 //        });
 
-        function setClass(elem, klass) {
-            elem.removeClass();
-            elem.addClass(klass);
-        }
-
-        $('#tap-to-show-answer').click(function() {
-            setClass($('#card'), 'answer');
-        });
-
-        $('#wrong-but').click(function() {
-            wrongAnswer();
-            nextCard();
-        });
-
-        $('#skip-but').click(function() {
-            nextCard();
-        });
-
-        $('#right-but').click(function() {
-            rightAnswer();
-            nextCard();
-        });
-
         var Perseus = new function() {
             this._refs = {};
 
@@ -89,62 +66,109 @@
             };
         };
 
-        var wrongCount = 0,
-            rightCount = 0;
+        var user = Perseus.storeObject("user_alco", new function() {
+            this.currentCard = 0;
+            this.viewedCardCount = 0;
 
-        var cards = Perseus.storeObject("cards", {
-                "currentCard": 0,
-                "title": "The Basics",
-                "cards": [
-                {
-                    "fr": "Ça va?",
-                    "en": "How are you?",
-                    "ru": "Как дела?"
-                },
-                {
-                    "fr": "Ça va bien.",
-                    "ru": "Дела идут хорошо.",
-                    "en": "Things are going well."
-                } 
-                ]
-            });
-        cards.currentCard = Math.max(cards.currentCard, 0);
+            this.skippedCount = 0;
+            this.skipCard = function() {
+                this.skippedCount++;
+            };
+
+            this.guessedAnswers = [];
+            this.examAnswers = [];
+
+            this.addAnswer = function(type) {
+                var answer = {
+                    timestamp: new Date().getTime(),
+                    type: type,
+                    thinkingTime: 0
+                };
+                this.guessedAnswers.push(answer);
+            }
+        });
+
+        var cards = {
+            "currentCard": 0,
+            "title": "The Basics",
+            "cards": [
+            {
+                "fr": "Ça va?",
+                "en": "How are you?",
+                "ru": "Как дела?"
+            },
+            {
+                "fr": "Ça va bien.",
+                "ru": "Дела идут хорошо.",
+                "en": "Things are going well."
+            } 
+            ]
+        };
+
+
+        function setClass(elem, klass) {
+            elem.removeClass();
+            elem.addClass(klass);
+        }
+
+        $('#tap-to-show-answer').click(function() {
+            setClass($('#card'), 'answer');
+        });
+
+        $('#wrong-but').click(function() {
+            wrongAnswer();
+            nextCard();
+        });
+
+        $('#skip-but').click(function() {
+            user.skipCard();
+            nextCard();
+        });
+
+        $('#right-but').click(function() {
+            rightAnswer();
+            nextCard();
+        });
+
 
         function wrongAnswer() {
-            wrongCount++;
+            user.addAnswer('wrong');
         }
 
         function rightAnswer() {
-            rightCount++;
+            user.addAnswer('right');
         }
 
         function nextCard() {
-            cards.currentCard++;
-            showCard(cards.currentCard);
+            user.currentCard++;
+            showCard(user.currentCard);
         }
 
         function showCard(index) {
             var titleElem = $('#card-title p'),
                 contentElem = $('#card-content p');
 
-            if (cards.currentCard >= cards["cards"].length) {
+            if (user.currentCard >= cards["cards"].length) {
                 titleElem.html("The End");
                 contentElem.html("");
                 setClass($('#card'), 'choice');
-                cards.currentCard = -1;
+                user.currentCard = -1;
                 return;
             }
+
+            if (index < 0)
+                index = 0;
 
             var cardData = cards["cards"][index];
             titleElem.html(cardData["en"]);
             contentElem.html(cardData["fr"]);
             setClass($('#card'), 'choice');
 
-            $('#counter').html((cards.currentCard+1) + "/" + cards["cards"].length);
+            $('#counter').html((index+1) + "/" + cards["cards"].length);
         }
 
         // main
-        showCard(cards.currentCard);
+        showCard(user.currentCard);
 
         window.onbeforeunload = function(e){
             Perseus.store();
