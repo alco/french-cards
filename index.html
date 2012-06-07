@@ -38,6 +38,13 @@
         var Perseus = new function() {
             this._refs = {};
 
+            this.reset = function() {
+                for (var key in this._refs) {
+                    localStorage.setItem(key, undefined);
+                }
+                this._refs = {};
+            };
+
             this.storeObject = function(key, obj) {
                 var db_object = localStorage.getItem(key);
                 if (db_object !== null) {
@@ -78,32 +85,149 @@
             this.guessedAnswers = [];
             this.examAnswers = [];
 
+            var LEVEL_FIRST_OCCURENCE = 0,
+                LEVEL_4_HOURS = 1,
+                LEVEL_8_HOURS = 2,
+                LEVEL_24_HOURS = 3,
+                LEVEL_1_WEEK = 4,
+                LEVEL_2_WEEKS = 5,
+                LEVEL_1_MONTH = 6;
+
+            // All time periods are given in hours
+            var PERIODS = [
+                4,
+                8,
+                24,
+                24 * 7,
+                24 * 14,
+                24 * 30
+            ];
+            
+            this.getQuestionList = function(cards) {
+                var result = [];
+
+                for (var question_id = 0; question_id < cards.length; ++question_id) {
+                    // Search for previous answers with the same id to determine the level
+                    var prevAnswer = null;
+                    for (var i = this.guessedAnswers.length-1; i >= 0; --i) {
+                        var ans = this.guessedAnswers[i];
+                        if (ans.id == question_id) {
+                            prevAnswer = ans;
+                            break;
+                        }
+                    }
+
+                    if (prevAnswer) {
+                        // Check to see whether enough time has passed
+                        var orig_time = prevAnswer.timestamp;
+                        var current_time = new Date().getTime();
+                        var diff = current_time - orig_time;  // in milliseconds
+                        var diff_in_hours = diff / 1000 / 3600;
+                        if (diff_in_hours > PERIODS[prevAnswer.level]) {
+                            // take this question
+                        } else {
+                            // skip the question
+                            continue;
+                        }
+                    }
+
+                    result.push(cards[question_id]);
+                } 
+
+                return result;
+            };
+
             this.addAnswer = function(type) {
+                var question_id = this.currentCard;
+
+                // Search for previous answers with the same id to determine the level
+                var level = LEVEL_FIRST_OCCURENCE;
+                for (var i = this.guessedAnswers.length-1; i >= 0; --i) {
+                    var ans = this.guessedAnswers[i];
+                    if (ans.id == question_id) {
+                        level = ans.level+1;
+                        break;
+                    }
+                }
+                        
                 var answer = {
+                    id: question_id,
+                    level: level,
                     timestamp: new Date().getTime(),
                     type: type,
                     thinkingTime: 0
                 };
+
                 this.guessedAnswers.push(answer);
             }
         });
 
         var cards = {
-            "currentCard": 0,
-            "title": "The Basics",
             "cards": [
             {
-                "fr": "Ça va?",
-                "en": "How are you?",
-                "ru": "Как дела?"
-            },
+                "ru": "Как дела?", 
+                "fr": "Ça va?", 
+                "en": "How are you?"
+            }, 
             {
-                "fr": "Ça va bien.",
-                "ru": "Дела идут хорошо.",
+                "ru": "Дела идут хорошо.", 
+                "fr": "Ça va bien.", 
                 "en": "Things are going well."
-            } 
-            ]
+            }, 
+            {
+                "fr": "Ça ne va pas.", 
+                "en": "Things aren't going well."
+            }, 
+            {
+                "ru": "хорошо", 
+                "fr": "bien", 
+                "en": "well"
+            }, 
+            {
+                "ru": "спасибо", 
+                "fr": "merci", 
+                "en": "thanks"
+            }, 
+            {
+                "ru": "превосходно", 
+                "fr": "excellent", 
+                "en": "excellent"
+            }, 
+            {
+                "ru": "да", 
+                "fr": "oui", 
+                "en": "yes"
+            }, 
+            {
+                "ru": "нет", 
+                "fr": "non", 
+                "en": "no"
+            }, 
+            {
+                "ru": "очень легко", 
+                "fr": "très facile", 
+                "en": "very easy"
+            }, 
+            {
+                "ru": "Я в хорошей форме.", 
+                "fr": "Je suis en forme.", 
+                "en": "I'm in a good form."
+            }, 
+            {
+                "ru": "Я устал.", 
+                "fr": "Je suis fatigué.", 
+                "en": "I'm tired."
+            }, 
+            {
+                "ru": "до скорого", 
+                "fr": "à la prochaine", 
+                "en": "until next time"
+            }
+            ], 
+                "title": "The Basics"
         };
+
+        var questions = user.getQuestionList(cards["cards"]);
 
 
         function setClass(elem, klass) {
@@ -148,7 +272,7 @@
             var titleElem = $('#card-title p'),
                 contentElem = $('#card-content p');
 
-            if (user.currentCard >= cards["cards"].length) {
+            if (user.currentCard >= questions.length) {
                 titleElem.html("The End");
                 contentElem.html("");
                 setClass($('#card'), 'choice');
@@ -159,12 +283,12 @@
             if (index < 0)
                 index = 0;
 
-            var cardData = cards["cards"][index];
+            var cardData = questions[index];
             titleElem.html(cardData["en"]);
             contentElem.html(cardData["fr"]);
             setClass($('#card'), 'choice');
 
-            $('#counter').html((index+1) + "/" + cards["cards"].length);
+            $('#counter').html((index+1) + "/" + questions.length);
         }
 
         // main
