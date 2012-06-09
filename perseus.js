@@ -11,7 +11,7 @@ var Perseus = new function() {
         this._refs = {};
     };
 
-    this.trackObject = function(key, obj) {
+    this.persistentObject = function(key, obj) {
         var db_object = localStorage.getItem(key);
         if (db_object !== null) {
             db_object = JSON.parse(db_object);

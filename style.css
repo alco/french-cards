@@ -11,6 +11,10 @@ div {
     display: none;
 }
 
+#stats-area {
+    display: none;
+}
+
 #card {
     width: 200;
     /*height: 300;*/
