@@ -7,7 +7,9 @@
 
 var greetingArea = $('#greeting-area'),
     greetingElem = greetingArea.children('#greeting'),
-    startSessionBut = greetingArea.children('#start-session-but');
+    startSessionBut = greetingArea.children('#start-session-but'),
+
+    studyArea = $('#study-area');
 
 window.startSession = function() {
     var msg = "Hello, Alex! ";
@@ -26,6 +28,11 @@ window.setClass = function(elem, klass) {
     elem.removeClass();
     elem.addClass(klass);
 }
+
+startSessionBut.click(function() {
+    greetingArea.hide();
+    studyArea.show();
+});
 
 $('#tap-to-show-answer').click(function() {
     setClass($('#card'), 'answer');
