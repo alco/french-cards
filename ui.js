@@ -5,7 +5,9 @@
  */
 (function($, mw, window, undefined) {
 
-var greetingElem = $('#greeting');
+var greetingArea = $('#greeting-area'),
+    greetingElem = greetingArea.children('#greeting'),
+    startSessionBut = greetingArea.children('#start-session-but');
 
 window.startSession = function() {
     var msg = "Hello, Alex! ";
@@ -13,6 +15,7 @@ window.startSession = function() {
     if (cardCount) {
         var cardsWord = (cardCount == 1 ? "card" : "cards");
         msg += "I have " + cardCount + " " + cardsWord + " for you to review.";
+        startSessionBut.show();
     } else {
         msg += "Looks like there is nothing for you to review at the moment. You can study new cards or come back in about N hours.";
     }
