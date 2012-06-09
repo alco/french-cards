@@ -3,6 +3,10 @@ div {
     text-align: center;
 }
 
+#study-area {
+    display: none;
+}
+
 #card {
     width: 200;
     /*height: 300;*/

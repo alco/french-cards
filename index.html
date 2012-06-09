@@ -2,301 +2,62 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-    <title>Ultra Study</title>
+    <title>Mwalimu</title>
     
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
 </head>
 <body>
-    <div id="card" class="choice">
-        <div id="card-title">
-            <p>Hello</p>
+    <p id="greeting">Hello, Alex!</p>
+
+    <div id="study-area">
+        <div id="card" class="choice">
+            <div id="card-title">
+                <p>Hello</p>
+            </div>
+            <div id="card-content" class="content">
+                <p id="answer">Bonjour</p>
+                <!--<button id="flip-card-but">Show answer</button>-->
+                <div id="tap-to-enter-answer">Tap here to type in the answer</div>
+                <div id="tap-to-show-answer">Tap here to show the answer</div>
+            </div>
+            <div id="card-footer" class="footer">
+                <button id="wrong-but" class="footer-but">Wrong</button>
+                <button id="right-but" class="footer-but">Right</button>
+                <button id="skip-but" class="footer-skip">Skip</button>
+            </div>
         </div>
-        <div id="card-content" class="content">
-            <p id="answer">Bonjour</p>
-            <!--<button id="flip-card-but">Show answer</button>-->
-            <div id="tap-to-enter-answer">Tap here to type in the answer</div>
-            <div id="tap-to-show-answer">Tap here to show the answer</div>
-        </div>
-        <div id="card-footer" class="footer">
-            <button id="wrong-but" class="footer-but">Wrong</button>
-            <button id="right-but" class="footer-but">Right</button>
-            <button id="skip-but" class="footer-skip">Skip</button>
-        </div>
+
+        <p id="counter"></p>
     </div>
 
-    <p id="counter"></p>
-
     <script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+    <script src="perseus.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mwalimu.js" type="text/javascript" charset="utf-8"></script>
+    <script src="cards.js" type="text/javascript" charset="utf-8"></script>
+    <script src="user.js" type="text/javascript" charset="utf-8"></script>
+    <script src="ui.js" type="text/javascript" charset="utf-8"></script>
+
     <script type="text/javascript" charset="utf-8">
-//        $('#flip-card-but').click(function() {
-//            $(this).hide();
-//            $('#card-content').css({
-//                color: "black"
-//            });
-//        });
-
-        var Perseus = new function() {
-            this._refs = {};
-
-            this.reset = function() {
-                for (var key in this._refs) {
-                    localStorage.setItem(key, undefined);
-                }
-                this._refs = {};
-            };
-
-            this.storeObject = function(key, obj) {
-                var db_object = localStorage.getItem(key);
-                if (db_object !== null) {
-                    db_object = JSON.parse(db_object);
-                    // clone obj
-                    var instance = $.extend(true, {}, obj);
-                    for (var prop in db_object) {
-                        instance[prop] = db_object[prop];
-                    }
-                    console.log(instance);
-                    console.log("Loaded from localStorage");
-                    console.log(db_object);
-                    this._refs[key] = instance;
-                    return instance;
-                } else {
-                    localStorage.setItem(key, JSON.stringify(obj));
-                    this._refs[key] = obj;
-                    return obj;
-                }
-            }
-
-            this.store = function() {
-                for (var key in this._refs) {
-                    localStorage.setItem(key, JSON.stringify(this._refs[key]));
-                }
-            };
-        };
-
-        var user = Perseus.storeObject("user_alco", new function() {
-            this.currentCard = 0;
-            this.viewedCardCount = 0;
-
-            this.skippedCount = 0;
-            this.skipCard = function() {
-                this.skippedCount++;
-            };
-
-            this.guessedAnswers = [];
-            this.examAnswers = [];
-
-            var LEVEL_FIRST_OCCURENCE = 0,
-                LEVEL_4_HOURS = 1,
-                LEVEL_8_HOURS = 2,
-                LEVEL_24_HOURS = 3,
-                LEVEL_1_WEEK = 4,
-                LEVEL_2_WEEKS = 5,
-                LEVEL_1_MONTH = 6;
-
-            // All time periods are given in hours
-            var PERIODS = [
-                4,
-                8,
-                24,
-                24 * 7,
-                24 * 14,
-                24 * 30
-            ];
-            
-            this.getQuestionList = function(cards) {
-                var result = [];
-
-                for (var question_id = 0; question_id < cards.length; ++question_id) {
-                    // Search for previous answers with the same id to determine the level
-                    var prevAnswer = null;
-                    for (var i = this.guessedAnswers.length-1; i >= 0; --i) {
-                        var ans = this.guessedAnswers[i];
-                        if (ans.id == question_id) {
-                            prevAnswer = ans;
-                            break;
-                        }
-                    }
-
-                    if (prevAnswer) {
-                        // Check to see whether enough time has passed
-                        var orig_time = prevAnswer.timestamp;
-                        var current_time = new Date().getTime();
-                        var diff = current_time - orig_time;  // in milliseconds
-                        var diff_in_hours = diff / 1000 / 3600;
-                        if (diff_in_hours > PERIODS[prevAnswer.level]) {
-                            // take this question
-                        } else {
-                            // skip the question
-                            continue;
-                        }
-                    }
-
-                    result.push(cards[question_id]);
-                } 
-
-                return result;
-            };
-
-            this.addAnswer = function(type) {
-                var question_id = this.currentCard;
-
-                // Search for previous answers with the same id to determine the level
-                var level = LEVEL_FIRST_OCCURENCE;
-                for (var i = this.guessedAnswers.length-1; i >= 0; --i) {
-                    var ans = this.guessedAnswers[i];
-                    if (ans.id == question_id) {
-                        level = ans.level+1;
-                        break;
-                    }
-                }
-                        
-                var answer = {
-                    id: question_id,
-                    level: level,
-                    timestamp: new Date().getTime(),
-                    type: type,
-                    thinkingTime: 0
-                };
-
-                this.guessedAnswers.push(answer);
-            }
-        });
-
-        var cards = {
-            "cards": [
-            {
-                "ru": "Как дела?", 
-                "fr": "Ça va?", 
-                "en": "How are you?"
-            }, 
-            {
-                "ru": "Дела идут хорошо.", 
-                "fr": "Ça va bien.", 
-                "en": "Things are going well."
-            }, 
-            {
-                "fr": "Ça ne va pas.", 
-                "en": "Things aren't going well."
-            }, 
-            {
-                "ru": "хорошо", 
-                "fr": "bien", 
-                "en": "well"
-            }, 
-            {
-                "ru": "спасибо", 
-                "fr": "merci", 
-                "en": "thanks"
-            }, 
-            {
-                "ru": "превосходно", 
-                "fr": "excellent", 
-                "en": "excellent"
-            }, 
-            {
-                "ru": "да", 
-                "fr": "oui", 
-                "en": "yes"
-            }, 
-            {
-                "ru": "нет", 
-                "fr": "non", 
-                "en": "no"
-            }, 
-            {
-                "ru": "очень легко", 
-                "fr": "très facile", 
-                "en": "very easy"
-            }, 
-            {
-                "ru": "Я в хорошей форме.", 
-                "fr": "Je suis en forme.", 
-                "en": "I'm in a good form."
-            }, 
-            {
-                "ru": "Я устал.", 
-                "fr": "Je suis fatigué.", 
-                "en": "I'm tired."
-            }, 
-            {
-                "ru": "до скорого", 
-                "fr": "à la prochaine", 
-                "en": "until next time"
-            }
-            ], 
-                "title": "The Basics"
-        };
-
-        var questions = user.getQuestionList(cards["cards"]);
-
-
-        function setClass(elem, klass) {
-            elem.removeClass();
-            elem.addClass(klass);
-        }
-
-        $('#tap-to-show-answer').click(function() {
-            setClass($('#card'), 'answer');
-        });
-
-        $('#wrong-but').click(function() {
-            wrongAnswer();
-            nextCard();
-        });
-
-        $('#skip-but').click(function() {
-            user.skipCard();
-            nextCard();
-        });
-
-        $('#right-but').click(function() {
-            rightAnswer();
-            nextCard();
-        });
-
-
-        function wrongAnswer() {
-            user.addAnswer('wrong');
-        }
-
-        function rightAnswer() {
-            user.addAnswer('right');
-        }
-
-        function nextCard() {
-            user.currentCard++;
-            showCard(user.currentCard);
-        }
-
-        function showCard(index) {
-            var titleElem = $('#card-title p'),
-                contentElem = $('#card-content p');
-
-            if (user.currentCard >= questions.length) {
-                titleElem.html("The End");
-                contentElem.html("");
-                setClass($('#card'), 'choice');
-                user.currentCard = -1;
-                return;
-            }
-
-            if (index < 0)
-                index = 0;
-
-            var cardData = questions[index];
-            titleElem.html(cardData["en"]);
-            contentElem.html(cardData["fr"]);
-            setClass($('#card'), 'choice');
-
-            $('#counter').html((index+1) + "/" + questions.length);
-        }
-
-        // main
-        showCard(user.currentCard);
-
-        window.onbeforeunload = function(e){
-            Perseus.store();
-        }
+        startSession();
+//        var questions = user.getQuestionList(cards["cards"]);
+//
+//        function wrongAnswer() {
+//            user.addAnswer('wrong');
+//        }
+//
+//        function rightAnswer() {
+//            user.addAnswer('right');
+//        }
+//
+//        function nextCard() {
+//            user.currentCard++;
+//            showCard(user.currentCard);
+//        }
+//
+//
+//        // main
+//        //showCard(user.currentCard);
+//
     </script>
 </body>
 </html>
