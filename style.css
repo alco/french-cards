@@ -3,6 +3,10 @@ div {
     text-align: center;
 }
 
+#greeting-area {
+    display: none;
+}
+
 #study-area {
     display: none;
 }
@@ -16,6 +20,10 @@ div {
 }
 
 #stats-area {
+    display: none;
+}
+
+#session-stats-area {
     display: none;
 }
 

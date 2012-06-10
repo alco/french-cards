@@ -3,10 +3,12 @@
  */
 
 (function($, window, document, undefined) {
+    var MILLISECS_TO_HOURS = 1 / 1000 / 3600;
+
     function hours_since(timestamp) {
         var current_time = new Date().getTime();
         var diff = current_time - timestamp;  // in milliseconds
-        return diff / 1000 / 3600;
+        return diff * MILLISECS_TO_HOURS;
     }
 
     function hours_between(t1, t2) {
@@ -17,7 +19,7 @@
         }
 
         var diff = t1 - t2;  // in milliseconds
-        return diff / 1000 / 3600;
+        return diff * MILLISECS_TO_HOURS;
     }
 
     var _unloadHook = function() {
@@ -36,7 +38,7 @@
         }
     }
 
-    var FIRST_REVIEW_HRS = 4;
+    var FIRST_REVIEW_HRS = 1;
 
     var user = Perseus.persistentObject("user", new User());
 

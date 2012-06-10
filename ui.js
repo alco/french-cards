@@ -5,9 +5,12 @@
  */
 (function($, mw, window, undefined) {
 
-var greetingArea = $('#greeting-area'),
+var mainContainer = $('#main-container'),
+
+    greetingArea = $('#greeting-area'),
     studyArea = $('#study-area'),
     statsArea = $('#stats-area'),
+    sessionStatsArea = $('#session-stats-area'),
 
     greetingElem = greetingArea.children('#greeting'),
     startSessionBut = $('#start-session-but'),
@@ -16,25 +19,23 @@ var greetingArea = $('#greeting-area'),
     titleElem = $('#card-title p'),
     contentElem = $('#card-content p');
 
-function startSession(session) {
+function setActiveArea(area) {
+    mainContainer.children().replaceWith(area);
+}
+
+function startReviewSession(session) {
     session.state = mw.SESSION_REVIEW;
-    greetingArea.hide();
-    studyArea.show();
-    statsArea.hide();
+    setActiveArea(studyArea);
     showCard(session);
 }
 
-function showStats(session) {
+function showSessionStats(session) {
     session.state = mw.SESSION_STATS;
-    greetingArea.hide();
-    studyArea.hide();
-    statsArea.show();
+    setActiveArea(sessionStatsArea);
 }
 
 function startNewSession(msg) {
-    greetingArea.show();
-    studyArea.hide();
-    statsArea.hide();
+    setActiveArea(greetingArea);
     startSessionBut.hide();
 
     if (msg === undefined)
@@ -48,10 +49,10 @@ function startNewSession(msg) {
             msg += "I have " + session.cardCount + " " + cardsWord + " for you to review.";
             startSessionBut.show();
         } else if (session.state == mw.SESSION_REVIEW) {
+            startReviewSession(session);
             $('#session-resumed').show();
-            startSession(session);
         } else if (session.state == mw.SESSION_STATS) {
-            showStats(session);
+            showSessionStats(session);
         } else {
             console.log("Unhandled session state: " + session.state);
         }
@@ -65,6 +66,13 @@ window.init = function() {
     mw.init({
         shouldSetupUnloadHook: true,
     });
+
+    var areas = [greetingArea, studyArea, statsArea, sessionStatsArea];
+    for (var index in areas) {
+        var area = areas[index];
+        area.detach();
+        area.show();
+    }
 
     var msg = "Hello, Alex! ";
     startNewSession(msg);
@@ -87,7 +95,7 @@ function showCard(session) {
 function nextCard(session) {
     session.currentCard++;
     if (session.currentCard >= session.cardCount) {
-        showStats(session);
+        showSessionStats(session);
     } else {
         showCard(session);
     }
@@ -103,29 +111,41 @@ function wrongAnswer() {
 
 ///
 
-$('#start-session-but').click(function() {
-    startSession(session);
+function setOnClick(selector, fun) {
+    mainContainer.on('click', selector, fun);
+}
+
+setOnClick('#start-session-but', function() {
+    startReviewSession(session);
 });
 
-$('#tap-to-show-answer').click(function() {
+setOnClick('#tap-to-show-answer', function() {
     setClass(cardElem, 'answer');
 });
 
-$('#wrong-but').click(function() {
+setOnClick('#wrong-but', function() {
     wrongAnswer();
     nextCard(session);
 });
 
-$('#right-but').click(function() {
+setOnClick('#right-but', function() {
     rightAnswer();
     nextCard(session);
 });
 
-$('#skip-but').click(function() {
+setOnClick('#skip-but', function() {
     nextCard(session);
 });
 
-$('#restart-but').click(function() {
+///
+
+setOnClick('#view-stats-but', function() {
+    setActiveArea(statsArea);
+    var statsTable = $('#stats-table-body');
+    statsTable.html('<tr><td>hello</td></tr>');
+});
+
+setOnClick('.restart-but', function() {
     mw.clearSession();
     startNewSession();
 });

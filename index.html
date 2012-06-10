@@ -7,9 +7,14 @@
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
 </head>
 <body>
+    <div id="main-container">
+        <div></div>
+    </div>
+
     <div id="greeting-area">
         <p id="greeting">Hello, Alex!</p>
         <button id="start-session-but">Start session</button>
+        <button id="view-stats-but">View stats</button>
     </div>
 
     <div id="study-area">
@@ -34,7 +39,7 @@
         <p id="counter"></p>
     </div>
 
-    <div id="stats-area">
+    <div id="session-stats-area">
         <p>Well done! Here are the stats of this review session.</p>
 
         <table border="1">
@@ -43,7 +48,21 @@
             </thead>
         </table>
 
-        <button id="restart-but">Restart</button>
+        <button class="restart-but">Home</button>
+    </div>
+    
+    <div id="stats-area">
+        <p>Here are the stats of all previous sessions.</p>
+
+        <table border="1">
+            <thead>
+                <tr><td>Card ID</td><td>Progress</td><td>Right/Wrong Ratio</td><td>Next Appearance</td></tr>
+            </thead>
+            <tbody id="stats-table-body">
+            </tbody>
+        </table>
+
+        <button class="restart-but">Home</button>
     </div>
 
     <script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
