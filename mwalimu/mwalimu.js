@@ -83,6 +83,14 @@
         SESSION_STATS: 2,
 
         cards: Cards,
+        cardWithID: function(cardID) {
+            var comps = cardID.split('.');
+            if (comps[0] === "CoffeeBreak") {
+                var lesson = Cards[comps[1]];
+                var index = parseInt(comps[2]);
+                return lesson["cards"][index-1];
+            }
+        },
 
         init: function(options) {
             if (options) {
@@ -104,7 +112,7 @@
                 // Renew the timestamp
                 session.timestamp = new Date().getTime();
             } else {
-                var cards = this.getQuestionList(Cards, user);
+                var cards = this.getQuestionList(user);
                 if (cards.length === 0) {
                     return false;
                 }
@@ -132,19 +140,26 @@
             Perseus.removeObject("session");
         },
 
-        getQuestionList: function(cards, user) {
+        getQuestionList: function(user) {
             var result = [];
 
-            for (var cardID in cards) {
-                // Search for previous answers with the same id to determine the knowledge level
-                //
-                // For now, we'll check the last two answers to determine the time for the next exposure.
-                // If there is only one answer, this cardID will be shown after FIRST_REVIEW_HRS hours.
-                // If there are no answers, show this cardID right now.
-                var answers = user.guessedAnswers[cardID];
-                var time = projected_card_time(answers);
-                if (new Date().getTime() > time) {
-                    result.push(cardID);
+            for (var cat_key in user.cardCategories) {
+                var cats = user.cardCategories[cat_key];
+                for (var lesson_key in cats) {
+                    var lesson = cats[lesson_key];
+                    for (var index in lesson) {
+                        var cardID = cat_key + "." + lesson_key + "." + lesson[index];
+                        // Search for previous answers with the same id to determine the knowledge level
+                        //
+                        // For now, we'll check the last two answers to determine the time for the next exposure.
+                        // If there is only one answer, this cardID will be shown after FIRST_REVIEW_HRS hours.
+                        // If there are no answers, show this cardID right now.
+                        var answers = user.guessedAnswers[cardID];
+                        var time = projected_card_time(answers);
+                        if (new Date().getTime() > time) {
+                            result.push(cardID);
+                        }
+                    }
                 }
             }
 

@@ -80,6 +80,7 @@ function showStats() {
             return cmp;
         }
     });
+    statsTable.children().remove();
     for (var index in rows) {
         statsTable.append(arrayToTR(rows[index]));
     }
@@ -135,7 +136,7 @@ function setClass(elem, klass) {
 };
 
 function showCard(session) {
-    var cardData = mw.cards[session.currentCardID];
+    var cardData = mw.cardWithID(session.currentCardID);
     titleElem.html(cardData["en"]);
     contentElem.html(cardData["fr"]);
     setClass(cardElem, 'choice');

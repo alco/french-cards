@@ -10,6 +10,13 @@ var User = function() {
     this.guessedAnswers = {};
     this.examAnswers = [];
 
+    this.cardCategories = {
+        "CoffeeBreak": {
+            "1": [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            "2": [ 1, 2, 3 ],
+        }
+    };
+
     var LEVEL_FIRST_OCCURENCE = 0,
     LEVEL_4_HOURS = 1,
     LEVEL_8_HOURS = 2,
