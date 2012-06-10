@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import json
-
 MAIN_LANG = 'fr'
 
 def convert(data):
@@ -37,26 +35,51 @@ def convert(data):
             lang, content = line.split(':', 1)
             current_phrase[lang] = content.strip()
 
-    result = {
+    return {
         'title': title,
         'cards': sections,
     }
-    return json.dumps(result, ensure_ascii=False, indent=4)
+
+
+### MAIN part ###
+
+import argparse
+import codecs
+import os
+import os.path as path
+from collections import OrderedDict
+from functools import partial
+
+
+def read_file(filename):
+    with codecs.open(filename, encoding='utf-8') as in_file:
+        return in_file.read()
+
+def write_json(root, filename):
+    import json
+    with codecs.open(filename, 'w', encoding='utf-8') as out_file:
+        json.dump(root, out_file, ensure_ascii=False, indent=2)
 
 
 def main(argv):
-    import argparse
-    import codecs
-
     parser = argparse.ArgumentParser('Flash card converter')
-    parser.add_argument('card', type=str, help='A .card file to convert')
+    parser.add_argument('input', type=str, help='A .card file or a directory to convert')
     parser.add_argument('output', type=str, help='An output file to write to')
     args = parser.parse_args(argv)
 
-    with codecs.open(args.card, encoding='utf-8') as in_file:
-        data = in_file.read()
-    with codecs.open(args.output, 'w', encoding='utf-8') as out_file:
-        out_file.write(convert(data))
+    root = OrderedDict()
+    if path.isdir(args.input):
+        items = map(partial(path.join, args.input), os.listdir(args.input))
+        items = filter(path.isfile, items)
+        for filename in items:
+            key = path.splitext(path.basename(filename))[0]
+            data = read_file(filename)
+            root[key] = convert(data)
+    else:
+        root = convert(read_file(args.input))
+
+    write_json(root, args.output)
+
 
 if __name__ == '__main__':
     import sys
