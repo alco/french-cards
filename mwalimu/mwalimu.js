@@ -5,26 +5,33 @@
 (function($, window, document, undefined) {
     var MILLISECS_TO_HOURS = 1 / 1000 / 3600;
 
-    function hours_since(timestamp) {
+    function time_since(timestamp) {
         var current_time = new Date().getTime();
-        var diff = current_time - timestamp;  // in milliseconds
-        return diff * MILLISECS_TO_HOURS;
+        return current_time - timestamp;  // in milliseconds
     }
 
-    function hours_between(t1, t2) {
+    function hours_since(timestamp) {
+        return time_since(timestamp) * MILLISECS_TO_HOURS;
+    }
+
+    function time_between(t1, t2) {
         if (t1 < t2) {
             var tmp = t1;
             t1 = t2;
             t2 = tmp;
         }
+        return t1 - t2;  // in milliseconds
+    }
 
-        var diff = t1 - t2;  // in milliseconds
-        return diff * MILLISECS_TO_HOURS;
+    function hours_between(t1, t2) {
+        return time_between(t1, t2) * MILLISECS_TO_HOURS;
     }
 
     var _unloadHook = function() {
         Perseus.store();
     };
+
+    var FIRST_REVIEW_HRS = 4;
 
     function buildUnloadHook() {
         var prevUnloadHandler = window.onbeforeunload;
@@ -38,7 +45,29 @@
         }
     }
 
-    var FIRST_REVIEW_HRS = 1;
+    function projected_card_time(answers) {
+        if (!answers || answers.length === 0) {
+            return 0;
+        }
+
+        if (answers.length === 1) {
+            if (answers[0].isRight) {
+                return answers[0].timestamp + FIRST_REVIEW_HRS / MILLISECS_TO_HOURS;
+            }
+            return 0;
+        }
+
+        var a = answers[answers.length-1];
+        var b = answers[answers.length-2];
+        if (a.isRight) {
+            if (b.isRight) {
+                var time_diff = time_between(a.timestamp, b.timestamp);
+                return a.timestamp + time_diff * 2;
+            }
+            return a.timestamp + FIRST_REVIEW_HRS / MILLISECS_TO_HOURS;
+        }
+        return 0;
+    }
 
     var user = Perseus.persistentObject("user", new User());
 
@@ -46,6 +75,7 @@
         // Debug info
         // ***
         user: user,
+        hours_since: hours_since,
         // ***
 
         SESSION_GREETING: 0,
@@ -60,6 +90,10 @@
                     window.onbeforeunload = buildUnloadHook();
                 }
             }
+        },
+
+        finish: function() {
+            Perseus.store();
         },
 
         startSession: function() {
@@ -108,27 +142,39 @@
                 // If there is only one answer, this cardID will be shown after FIRST_REVIEW_HRS hours.
                 // If there are no answers, show this cardID right now.
                 var answers = user.guessedAnswers[cardID];
-                if (answers && answers.length === 1) {
-                    if (answers[0].isRight && hours_since(answers[0].timestamp) < FIRST_REVIEW_HRS) {
-                        continue;
-                    }
-                } else if (answers && answers.length > 1) {
-                    var a = answers[answers.length-1];
-                    var b = answers[answers.length-2];
-                    if (a.isRight) {
-                        if (b.isRight) {
-                            var time_diff = hours_between(a.timestamp, b.timestamp);
-                            if (hours_since(a.timestamp) < time_diff * 2) {
-                                continue;
-                            }
-                        } else if (hours_since(a.timestamp) < FIRST_REVIEW_HRS) {
-                            continue;
-                        }
-                    }
+                var time = projected_card_time(answers);
+                if (new Date().getTime() > time) {
+                    result.push(cardID);
                 }
-                result.push(cardID);
             }
 
+            return result;
+        },
+
+        getPreviousAnswers: function() {
+            var result = [];
+            var answers = this.user.guessedAnswers;
+            for (var cardID in answers) {
+                var records = answers[cardID];
+
+                var rightCount = 0,
+                    wrongCount = 0,
+                    nextAppearance = projected_card_time(records);
+
+                for (var index in records) {
+                    var ans = records[index];
+                    if (ans.isRight)
+                        ++rightCount;
+                    else
+                        ++wrongCount;
+                }
+                result.push({
+                    id: cardID,
+                    rightCount: rightCount,
+                    wrongCount: wrongCount,
+                    nextAppearance: nextAppearance
+                });
+            }
             return result;
         },
 

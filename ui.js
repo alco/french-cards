@@ -31,7 +31,58 @@ function startReviewSession(session) {
 
 function showSessionStats(session) {
     session.state = mw.SESSION_STATS;
+    mw.finish();
     setActiveArea(sessionStatsArea);
+}
+
+function showStats() {
+    setActiveArea(statsArea);
+    var statsTable = $('#stats-table-body');
+    var answers = mw.getPreviousAnswers();
+
+    function arrayToTR(array) {
+        var result = '<tr>';
+        for (var index in array) {
+            result += '<td>' + array[index] + '</td>';
+        }
+        return $(result + '</tr>');
+    }
+
+    // CardID | Progress | Right/Wrong Ratio | Next Appearance
+    var rows = [];
+    for (var index in answers) {
+        var answer = answers[index];
+        var time = -mw.hours_since(answer.nextAppearance);
+        var appearance;
+        if (time <= 0)
+            appearance = "now";
+        else {
+            time = Math.ceil(time);
+            appearance = "in about " + time + (time > 1 ? " hours" : " hour");
+        }
+        var row = [
+            answer.id,
+            0,
+            answer.rightCount + ":" + answer.wrongCount,
+            appearance
+        ];
+        rows.push(row);
+    }
+    rows.sort(function(a, b) {
+        var a_comps = a[0].split('.');
+        var b_comps = b[0].split('.');
+        for (var index in a_comps) {
+            var aa = a_comps[index];
+            var bb = b_comps[index];
+            var cmp = alphanum(aa, bb);
+            if (cmp === 0)
+                continue;
+            return cmp;
+        }
+    });
+    for (var index in rows) {
+        statsTable.append(arrayToTR(rows[index]));
+    }
 }
 
 function startNewSession(msg) {
@@ -140,14 +191,43 @@ setOnClick('#skip-but', function() {
 ///
 
 setOnClick('#view-stats-but', function() {
-    setActiveArea(statsArea);
-    var statsTable = $('#stats-table-body');
-    statsTable.html('<tr><td>hello</td></tr>');
+    showStats();
 });
 
 setOnClick('.restart-but', function() {
     mw.clearSession();
     startNewSession();
 });
+
+// Alphanumerical string comparison
+
+function alphanum(a, b) {
+  function chunkify(t) {
+    var tz = [], x = 0, y = -1, n = 0, i, j;
+
+    while (i = (j = t.charAt(x++)).charCodeAt(0)) {
+      var m = (i == 46 || (i >=48 && i <= 57));
+      if (m !== n) {
+        tz[++y] = "";
+        n = m;
+      }
+      tz[y] += j;
+    }
+    return tz;
+  }
+
+  var aa = chunkify(a);
+  var bb = chunkify(b);
+
+  for (x = 0; aa[x] && bb[x]; x++) {
+    if (aa[x] !== bb[x]) {
+      var c = Number(aa[x]), d = Number(bb[x]);
+      if (c == aa[x] && d == bb[x]) {
+        return c - d;
+      } else return (aa[x] > bb[x]) ? 1 : -1;
+    }
+  }
+  return aa.length - bb.length;
+}
 
 })(jQuery, Mwalimu, window);
