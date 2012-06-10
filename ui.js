@@ -35,6 +35,7 @@ function startNewSession(msg) {
     greetingArea.show();
     studyArea.hide();
     statsArea.hide();
+    startSessionBut.hide();
 
     if (msg === undefined)
         msg = "";
@@ -93,9 +94,11 @@ function nextCard(session) {
 }
 
 function rightAnswer() {
+    mw.addAnswer(session, 'right');
 }
 
 function wrongAnswer() {
+    mw.addAnswer(session, 'wrong');
 }
 
 ///

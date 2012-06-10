@@ -36,8 +36,9 @@
         }
     }
 
+    var FIRST_REVIEW_HRS = 4;
 
-    var user = new User();//Perseus.persistentObject("user", new User());
+    var user = Perseus.persistentObject("user", new User());
 
     var Mwalimu = {
         // Debug info
@@ -64,23 +65,24 @@
 
             // First check to see if there is a suspended session
             if (session.timestamp && hours_since(session.timestamp) < 1) {
-                // pass
+                // Renew the timestamp
+                session.timestamp = new Date().getTime();
             } else {
                 var cards = this.getQuestionList(Cards, user);
-                if (cards.length) {
-                    this.clearSession();
-
-                    // Return a new session object
-                    session = Perseus.persistentObject("session", {
-                        state: this.SESSION_GREETING,
-                        timestamp: new Date().getTime(),
-                        cards: cards,
-                        cardCount: cards.length,
-                        currentCard: 0,
-                    });
-                } else {
+                if (cards.length === 0) {
                     return false;
                 }
+
+                this.clearSession();
+
+                // Return a new session object
+                session = Perseus.persistentObject("session", {
+                    state: this.SESSION_GREETING,
+                    timestamp: new Date().getTime(),
+                    cards: cards,
+                    cardCount: cards.length,
+                    currentCard: 0,
+                });
             }
 
             session.__defineGetter__("currentCardID", function() {
@@ -105,21 +107,33 @@
                 // If there are no answers, show this cardID right now.
                 var answers = user.guessedAnswers[cardID];
                 if (answers && answers.length === 1) {
-                    if (hours_since(answers[0].timestamp) < FIRST_REVIEW_HRS) {
+                    if (answers[0].isRight && hours_since(answers[0].timestamp) < FIRST_REVIEW_HRS) {
                         continue;
                     }
                 } else if (answers && answers.length > 1) {
                     var a = answers[answers.length-1];
                     var b = answers[answers.length-2];
-                    var time_diff = hours_between(a.timestamp, b.timestamp);
-                    if (hours_since(a.timestamp) < time_diff * 2) {
-                        continue;
+                    if (a.isRight) {
+                        if (b.isRight) {
+                            var time_diff = hours_between(a.timestamp, b.timestamp);
+                            if (hours_since(a.timestamp) < time_diff * 2) {
+                                continue;
+                            }
+                        } else if (hours_since(a.timestamp) < FIRST_REVIEW_HRS) {
+                            continue;
+                        }
                     }
                 }
                 result.push(cardID);
             }
 
             return result;
+        },
+
+        addAnswer: function(session, type) {
+            var isRight = (type == 'right');
+
+            this.user.addAnswer(session.currentCardID, isRight);
         }
     };
 

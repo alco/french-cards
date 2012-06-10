@@ -28,27 +28,28 @@ var User = function() {
         24 * 30
     ];
 
-    this.addAnswer = function(type) {
-        var question_id = this.currentCard;
+    this.addAnswer = function(cardID, isRight) {
+        //// Search for previous answers with the same id to determine the level
+        //var level = LEVEL_FIRST_OCCURENCE;
+        //for (var i = this.guessedAnswers.length-1; i >= 0; --i) {
+            //var ans = this.guessedAnswers[i];
+            //if (ans.id == question_id) {
+                //level = ans.level+1;
+                //break;
+            //}
+        //}
 
-        // Search for previous answers with the same id to determine the level
-        var level = LEVEL_FIRST_OCCURENCE;
-        for (var i = this.guessedAnswers.length-1; i >= 0; --i) {
-            var ans = this.guessedAnswers[i];
-            if (ans.id == question_id) {
-                level = ans.level+1;
-                break;
-            }
+        var list = this.guessedAnswers[cardID];
+        if (list === undefined) {
+            list = [];
+            this.guessedAnswers[cardID] = list;
         }
 
         var answer = {
-            id: question_id,
-            level: level,
             timestamp: new Date().getTime(),
-            type: type,
+            isRight: isRight,
             thinkingTime: 0
         };
-
-        this.guessedAnswers.push(answer);
+        list.push(answer);
     }
 };
