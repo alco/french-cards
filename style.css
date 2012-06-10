@@ -7,6 +7,10 @@ div {
     display: none;
 }
 
+#session-resumed {
+    display: none;
+}
+
 #start-session-but {
     display: none;
 }

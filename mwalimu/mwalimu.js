@@ -20,6 +20,23 @@
         return diff / 1000 / 3600;
     }
 
+    var _unloadHook = function() {
+        Perseus.store();
+    };
+
+    function buildUnloadHook() {
+        var prevUnloadHandler = window.onbeforeunload;
+        if (prevUnloadHandler != null) {
+            return function() {
+                prevUnloadHandler();
+                _unloadHook();
+            };
+        } else {
+            return _unloadHook;
+        }
+    }
+
+
     var user = new User();//Perseus.persistentObject("user", new User());
 
     var Mwalimu = {
@@ -28,27 +45,53 @@
         user: user,
         // ***
 
+        SESSION_GREETING: 0,
+        SESSION_REVIEW: 1,
+        SESSION_STATS: 2,
+
         cards: Cards,
 
-        init: function() {
-        },
-
-        save: function() {
+        init: function(options) {
+            if (options) {
+                if (options.shouldSetupUnloadHook) {
+                    window.onbeforeunload = buildUnloadHook();
+                }
+            }
         },
 
         startSession: function() {
-            var cards = this.getQuestionList(Cards, user);
-            if (cards.length) {
-                // Return a new session object
-                return {
-                    cards: cards,
-                    cardCount: cards.length,
-                    currentCard: 0,
-                    get currentCardID() {
-                        return cards[this.currentCard];
-                    }
-                };
+            var session = Perseus.persistentObject("session", {});
+
+            // First check to see if there is a suspended session
+            if (session.timestamp && hours_since(session.timestamp) < 1) {
+                // pass
+            } else {
+                var cards = this.getQuestionList(Cards, user);
+                if (cards.length) {
+                    this.clearSession();
+
+                    // Return a new session object
+                    session = Perseus.persistentObject("session", {
+                        state: this.SESSION_GREETING,
+                        timestamp: new Date().getTime(),
+                        cards: cards,
+                        cardCount: cards.length,
+                        currentCard: 0,
+                    });
+                } else {
+                    return false;
+                }
             }
+
+            session.__defineGetter__("currentCardID", function() {
+                return this.cards[this.currentCard];
+            });
+
+            return session;
+        },
+
+        clearSession: function() {
+            Perseus.removeObject("session");
         },
 
         getQuestionList: function(cards, user) {
@@ -77,24 +120,9 @@
             }
 
             return result;
-        },
-
-        unloadHook: function(e) {
-            //Perseus.store();
         }
     };
 
-    // Set up the unload hook
-    var prevUnloadHandler = window.onbeforeunload;
-    if (prevUnloadHandler != null) {
-        var hook = Mwalimu.unloadHook;
-        Mwalimu.unloadHook = function() {
-            prevUnloadHandler();
-            hook();
-        };
-    }
-
     window.Mwalimu = Mwalimu;
-    window.onbeforeunload = Mwalimu.unloadHook;
 
 })(jQuery, window, document);

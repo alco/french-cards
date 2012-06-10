@@ -13,7 +13,7 @@ var Perseus = new function() {
 
     this.persistentObject = function(key, obj) {
         var db_object = localStorage.getItem(key);
-        if (db_object !== null) {
+        if (db_object !== null && db_object != "__Perseus_null__") {
             db_object = JSON.parse(db_object);
             // clone obj
             var instance = $.extend(true, {}, obj);
@@ -28,7 +28,12 @@ var Perseus = new function() {
             this._refs[key] = obj;
             return obj;
         }
-    }
+    };
+
+    this.removeObject = function(key) {
+        localStorage.setItem(key, "__Perseus_null__");
+        this._refs[key] = undefined;
+    };
 
     this.store = function() {
         for (var key in this._refs) {

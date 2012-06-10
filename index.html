@@ -13,6 +13,7 @@
     </div>
 
     <div id="study-area">
+        <p id="session-resumed">Your previous session has been restored.</p>
         <div id="card" class="choice">
             <div id="card-title">
                 <p>Hello</p>
@@ -34,7 +35,15 @@
     </div>
 
     <div id="stats-area">
-        <p>Well done!</p>
+        <p>Well done! Here are the stats of this review session.</p>
+
+        <table border="1">
+            <thead>
+                <tr><td>Card ID</td><td>Thinking time</td><td>Answer</td><td>Knowledge level</td></tr>
+            </thead>
+        </table>
+
+        <button id="restart-but">Restart</button>
     </div>
 
     <script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
@@ -45,7 +54,7 @@
     <script src="ui.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript" charset="utf-8">
-        startSession();
+        init();
 //        var questions = user.getQuestionList(cards["cards"]);
 //
 //        function wrongAnswer() {
