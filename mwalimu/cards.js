@@ -420,5 +420,100 @@ var Cards = {
       }
     ],
     "title": "Family & Relatives"
+  },
+  "6": {
+      "cards": [
+      {
+          "ru": "тогда",
+          "fr": "alors",
+          "en": "then, well"
+      },
+      {
+          "ru": "довольно",
+          "fr": "assez",
+          "en": "enough, quite"
+      },
+      {
+          "ru": "также",
+          "fr": "aussi",
+          "en": "also"
+      },
+      {
+          "ru": "хорошо",
+          "fr": "bien",
+          "en": "well"
+      },
+      {
+          "ru": "уже",
+          "fr": "déjà",
+          "en": "already"
+      },
+      {
+          "ru": "еще",
+          "fr": "encore",
+          "en": "again, still"
+      },
+      {
+          "ru": "вместе",
+          "fr": "ensemble",
+          "en": "together"
+      },
+      {
+          "ru": "слишком",
+          "fr": "trop",
+          "en": "too (much)"
+      },
+      {
+          "ru": "мало",
+          "fr": "peu",
+          "en": "little"
+      },
+      {
+          "ru": "затем",
+          "fr": "puis",
+          "en": "then"
+      },
+      {
+          "ru": "вдруг",
+          "fr": "soudain",
+          "en": "suddenly"
+      },
+      {
+          "ru": "очень",
+          "fr": "très",
+          "en": "very"
+      },
+      {
+          "ru": "долго",
+          "fr": "longtemps",
+          "en": "for a long time"
+      },
+      {
+          "ru": "теперь",
+          "fr": "maintenant",
+          "en": "now"
+      },
+      {
+          "ru": "много",
+          "fr": "beaucoup",
+          "en": "much"
+      },
+      {
+          "ru": "особенно",
+          "fr": "surtout",
+          "en": "mainly, above all"
+      },
+      {
+          "ru": "всегда",
+          "fr": "toujours",
+          "en": "always, still"
+      },
+      {
+          "ru": "наконец",
+          "fr": "enfin",
+          "en": "finally"
+      }
+      ],
+          "title": "Common Adverbs"
   }
 };
