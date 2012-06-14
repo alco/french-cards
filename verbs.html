@@ -1,0 +1,87 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <title>Verbjugations</title>
+    
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
+</head>
+<body>
+    <div>
+        <table border="1">
+            <thead><tr><td>Verb groups</td><td>Tenses</td><td>Persons</td></tr></thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <ul>
+                            <li><input type="CHECKBOX" checked="1">-er verbs</li>
+                            <li><input type="CHECKBOX">-re verbs</li>
+                            <li><input type="CHECKBOX">-ir verbs</li>
+                            <li><input type="CHECKBOX">1-2-3-6 verbs</li>
+                            <li><input type="CHECKBOX">irregular verbs</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li><input type="CHECKBOX" checked="1">Present</li>
+                            <li><input type="CHECKBOX">Perfect</li>
+                            <li><input type="CHECKBOX">Imperfect</li>
+                            <li><input type="CHECKBOX">Future</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li><input type="CHECKBOX" checked="1">je</li>
+                            <li><input type="CHECKBOX" checked="1">tu</li>
+                            <li><input type="CHECKBOX" checked="1">il</li>
+                            <li><input type="CHECKBOX" checked="1">nous</li>
+                            <li><input type="CHECKBOX" checked="1">vous</li>
+                            <li><input type="CHECKBOX" checked="1">ils</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr><td colspan="3">
+                        <p><input type="CHECKBOX">Choose each verb individually</p>
+                </td></tr>
+            </tbody>
+        </table>
+        <button>Start</button>
+    </div>
+
+    <div>
+        <h2>Test</h2>
+        <table border="1">
+            <tr>
+                <td colspan="6">
+                    to have -&gt; <input id="infinitive-input" type="TEXT"><span id="infinitive-label" style="display: none">avoir</span></input>
+                </td>
+            </tr>
+            <tr>
+                <td id="td-je"><span id="pron1">j'</span><input type="TEXT"></td>
+                <td id="td-nous"><span id="pron4">nous</span><input type="TEXT"></td>
+            </tr>
+            <tr>
+                <td id="td-tu"><span id="pron2">tu</span><input type="TEXT"></td>
+                <td id="td-vous"><span id="pron5">vous</span><input type="TEXT"></td>
+            </tr>                
+            <tr>
+                <td id="td-il"><span id="pron3">il</span><input type="TEXT"></td>
+                <td id="td-ils"><span id="pron6">ils</span><input type="TEXT"></td>
+            </tr>
+        </table>
+        <p><input id="test-infinitive" type="CHECKBOX" checked="1">Test infinitive as well</p>
+        <p><input id="display-pronouns" type="CHECKBOX">Display pronouns</p>
+        <button>Done</button>
+    </div>
+
+    <script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+    <script src="perseus.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mwalimu/user.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mwalimu/cards.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mwalimu/mwalimu.js" type="text/javascript" charset="utf-8"></script>
+    <script src="verb-ui.js" type="text/javascript" charset="utf-8"></script>
+
+    <script type="text/javascript" charset="utf-8">
+    </script>
+</body>
+</html>
