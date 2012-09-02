@@ -27,16 +27,13 @@
     <button>New word</button>
 
     <div id="word-editor">
-        <p>New word: <input id="word"></p>
+        <p id="word" style="font-weight: bold"></p>
         <p>Source language:</p>
-        <select id="source-lang">
-            <option value="es">Spanish</option>
-            <option value="en">English</option>
-            <option value="it">Italian</option>
-            <option value="de">German</option>
-        </select>
+        <p id="source-lang"></p>
         <p>Part of speech:</p>
-        <ul>
+        <ul id="parts-of-speech">
+        </ul>
+        <ul style="display: none">
             <li><input type="CHECKBOX" name="part-of-speech">noun</li>
             <li><input type="CHECKBOX" name="part-of-speech">verb</li>
             <li><input type="CHECKBOX" name="part-of-speech">adjective</li>
@@ -44,16 +41,9 @@
             <li><input type="CHECKBOX" name="part-of-speech">pronoun</li>
         </ul>
         <p>Translations:</p>
-        <ul>
+        <ul id="translations">
             <li><span class="lang-id">ru:</span> <input class="translation ru"></li>
             <li><span class="lang-id">en:</span> <input class="translation en"></li>
-        </ul>
-
-        <button id="add-new-word-but">Add</button>
-        <button id="get-stored-words-but">Get words</button>
-
-        <p>Stored words:</p>
-        <ul id="word-list">
         </ul>
     </div>
     

@@ -84,6 +84,8 @@ $(document).ready(function() {
         $('input[name="part-of-speech"]').each(function() {
             this.checked = false;
         });
+        $('#parts-of-speech').children().remove();
+        $('#translations').children().remove();
     }
 
     function populateEditor(word) {
@@ -103,25 +105,33 @@ $(document).ready(function() {
         wordEditorElem.show();
 
         var wordData = storedWords[index];
-        $('#word').val(wordData['word']);
-        $('#source-lang').val(wordData['sourceLang']);
+        $('#word').text(wordData['word']);
+        $('#source-lang').text(wordData['sourceLang']);
         _.each(wordData['partsOfSpeech'], function(obj) {
-            var correctElem;
-            $('input[name="part-of-speech"]').each(function(ind, elem) {
-                if ($(elem).parent().text() == obj) {
-                    correctElem = elem;
-                }
-            });
-            console.log(correctElem);
-            console.log(typeof(correctElem));
-            correctElem.checked = true;
+            $('#parts-of-speech').append('<li>' + obj + '</li>');
+            //var correctElem;
+            //$('input[name="part-of-speech"]').each(function(ind, elem) {
+                //if ($(elem).parent().text() == obj) {
+                    //correctElem = elem;
+                //}
+            //});
+            //console.log(correctElem);
+            //console.log(typeof(correctElem));
+            //correctElem.checked = true;
         });
         _.each(wordData['translations'], function(obj, key) {
-            $('.translation').each(function() {
-                if ($(this).hasClass(key)) {
-                    $(this).val(obj);
-                }
-            });
+            if (obj.length == 0) {
+                return;
+            }
+            var langElem = $('<span></span>');
+            langElem.addClass('lang-id');
+            langElem.text(key + ':');
+
+            var liElem = $('<li></li>');
+            liElem.text(' ' + obj);
+            liElem.prepend(langElem);
+
+            liElem.appendTo($('#translations'));
         });
     }
 
