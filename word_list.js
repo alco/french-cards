@@ -55,6 +55,7 @@ $(document).ready(function() {
         highlightTopic(elem);
         var topicName = $(elem).children('a').text();
         displayWords(topicName);
+        history.pushState({state: 'topic', name: topicName}, '', '#' + topicName);
     }
 
 
@@ -86,6 +87,7 @@ $(document).ready(function() {
         });
         $('#parts-of-speech').children().remove();
         $('#translations').children().remove();
+        $('#word-image').hide();
     }
 
     function populateEditor(word) {
@@ -133,12 +135,19 @@ $(document).ready(function() {
 
             liElem.appendTo($('#translations'));
         });
+        if (wordData['image']) {
+            $('#word-image').attr('src', wordData['image']);
+            $('#img-url').val(wordData['image']);
+            $('#word-image').show();
+        }
     }
 
     function selectWord(elem) {
         removeWordSelection();
         selectedWord = $(elem);
         selectedWord.addClass('selected');
+        var word = $(elem).children('a').text()
+        history.pushState({state: 'word', name: word}, '', '#' + selectedTopic.text() + '#' + word);
     }
 
     function removeWordSelection() {
@@ -147,4 +156,23 @@ $(document).ready(function() {
             selectedWord = null;
         }
     };
+
+    $(window).on('popstate', function(e) {
+        console.log('Popstate');
+        console.log(e.originalEvent);
+    });
+
+    $('#set-image-but').click(function() {
+        var imgURL = $('#img-url').val();
+        $('#word-image').attr('src', imgURL);
+        var word = $('#word').text();
+        var wordList = Perseus.lookupObject('words');
+        _.each(wordList, function(obj) {
+            if (obj['word'] == word) {
+                obj['image'] = imgURL;
+            }
+        });
+        Perseus.storeObject('words', wordList);
+        console.log($('#word-image'));
+    });
 });
