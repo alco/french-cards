@@ -95,3 +95,8 @@ div {
 p {
     border: 1px solid;
 }
+
+.lang-id {
+    font-weight: bold;
+    background-color: #ddf;
+}

@@ -1,0 +1,62 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <title>Mwalimu | Add new word</title>
+    
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
+</head>
+<body>
+
+    <div>
+        <p>New word: <input id="word"></p>
+        <p>Source language:</p>
+        <select id="source-lang">
+            <option value="es">Spanish</option>
+            <option value="en">English</option>
+            <option value="it">Italian</option>
+            <option value="de">German</option>
+        </select>
+        <p>Part of speech:</p>
+        <ul>
+            <li><input type="CHECKBOX" name="part-of-speech">noun</li>
+            <li><input type="CHECKBOX" name="part-of-speech">verb</li>
+            <li><input type="CHECKBOX" name="part-of-speech">adjective</li>
+            <li><input type="CHECKBOX" name="part-of-speech">adverb</li>
+            <li><input type="CHECKBOX" name="part-of-speech">pronoun</li>
+        </ul>
+        <p>Translations:</p>
+        <ul>
+            <li><span class="lang-id">ru:</span> <input class="translation ru"></li>
+            <li><span class="lang-id">en:</span> <input class="translation en"></li>
+        </ul>
+
+        <button id="add-new-word-but">Add</button>
+    </div>
+
+    <script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+    <script src="new_word.js" type="text/javascript" charset="utf-8"></script>
+
+    <script type="text/javascript" charset="utf-8">
+//        var questions = user.getQuestionList(cards["cards"]);
+//
+//        function wrongAnswer() {
+//            user.addAnswer('wrong');
+//        }
+//
+//        function rightAnswer() {
+//            user.addAnswer('right');
+//        }
+//
+//        function nextCard() {
+//            user.currentCard++;
+//            showCard(user.currentCard);
+//        }
+//
+//
+//        // main
+//        //showCard(user.currentCard);
+//
+    </script>
+</body>
+</html>
