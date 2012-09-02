@@ -100,3 +100,7 @@ p {
     font-weight: bold;
     background-color: #ddf;
 }
+
+.selected {
+    background-color: #afa;
+}
