@@ -104,3 +104,8 @@ p {
 .selected {
     background-color: #afa;
 }
+
+.left-half {
+    float: left;
+    width: 50%;
+}

@@ -8,19 +8,55 @@
 </head>
 <body>
 
-    <div>
-        <h2>Topics</h2>
-        <ul id="topic-list"></ul>
-    </div>
+    <div id="wrap">
+        <div id="topics-div" class="left-half">
+            <h2>Topics</h2>
+            <ul id="topic-list"></ul>
+        </div>
 
-    <div>
-        <h2>Words</h2>
-        <ul id="word-list"></ul>
+        <div id="words-div" style="margin-left: 50%">
+            <h2>Words</h2>
+            <ul id="word-list"></ul>
+        </div>
     </div>
     
-    <div>
+    <div style="margin-top: 150px">
         <h2>Word Details</h2>
     </div>
+
+    <button>New word</button>
+
+    <div id="word-editor">
+        <p>New word: <input id="word"></p>
+        <p>Source language:</p>
+        <select id="source-lang">
+            <option value="es">Spanish</option>
+            <option value="en">English</option>
+            <option value="it">Italian</option>
+            <option value="de">German</option>
+        </select>
+        <p>Part of speech:</p>
+        <ul>
+            <li><input type="CHECKBOX" name="part-of-speech">noun</li>
+            <li><input type="CHECKBOX" name="part-of-speech">verb</li>
+            <li><input type="CHECKBOX" name="part-of-speech">adjective</li>
+            <li><input type="CHECKBOX" name="part-of-speech">adverb</li>
+            <li><input type="CHECKBOX" name="part-of-speech">pronoun</li>
+        </ul>
+        <p>Translations:</p>
+        <ul>
+            <li><span class="lang-id">ru:</span> <input class="translation ru"></li>
+            <li><span class="lang-id">en:</span> <input class="translation en"></li>
+        </ul>
+
+        <button id="add-new-word-but">Add</button>
+        <button id="get-stored-words-but">Get words</button>
+
+        <p>Stored words:</p>
+        <ul id="word-list">
+        </ul>
+    </div>
+    
 
     <script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
     <script src="underscore.js" type="text/javascript" charset="utf-8"></script>
